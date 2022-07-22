@@ -10,8 +10,9 @@ ranks.forEach(rank => {
   return valueMap.set(rank, +rank);
 });
 
-console.log(valueMap);
+// --------------- CLASSES --------------- //
 
+// card class
 class Card {
   value;
 
@@ -30,6 +31,7 @@ class Card {
   }
 }
 
+// deck class
 class Deck {
   constructor() {
     this.cards = [];
@@ -60,118 +62,151 @@ class Deck {
   }
 }
 
-class Dealer {
-  cards;
-
-  constructor() {
-    this.deck = new Deck();
-  }
-
-  dealOne() {
-    return this.deck.drawCard(1);
-  }
-
-  dealTwo() {
-    return this.deck.drawCard(2);
-  }
-
-  calculateTotal() {
-    this.total = this.cards.reduce((sum, card) => {
-      return sum + card.value
-    }, 0);
-    return this.total;
-  }
-
-  hit() {
-    const [card] = dealer.dealOne();
-    this.cards.push(card);
-    this.calculateTotal();
-    return this;
-  }
-
-  stand() {
-    return this;
-  }
-}
-
-const dealer = new Dealer();
-
+// player class
 class Player {
   cards;
-  total;
+
+  constructor(name) {
+    this.name = name;
+  }
 
   calculateTotal() {
     this.total = this.cards.reduce((sum, card) => sum + card.value, 0);
     return this.total;
   }
 
-  hit() {
-    const [card] = dealer.dealOne();
+  showCards() {
+    let output = `${this.name}: `;
+    this.cards.forEach(card => {
+      output += `${card.rank}${card.suit} `;
+    });
+    output += `Total = ${this.total}`;
+    console.log(output);
+  }
+
+  hit(dealer) {
+    const card = dealer.dealOne();
     this.cards.push(card);
     this.calculateTotal();
-    return this;
+    this.showCards();
   }
 
   stand() {
-    return this;
+    return this.showCards();
+  }
+
+  checkBust() {
+    return this.total > 21;
+  }
+
+  findAce() {
+    return this.cards.find(card => card.value === 11);
+  }
+
+  checkForAces() {
+    const ace = this.findAce();
+    if (!ace) return false;
+    ace.adjustAceVal();
+    this.calculateTotal();
+    return true;
+  }
+
+  checkTurnOver() {
+    if (this.checkBust()) {
+      if (!this.checkForAces()) return true;
+      this.showCards();
+    }
+    return false;
   }
 }
 
-const player = new Player();
+// dealer class - special type of player
+class Dealer extends Player {
+  constructor(name) {
+    super(name);
+    this.deck = new Deck();
+  }
 
+  dealOne() {
+    return this.deck.drawCard(1)[0];
+  }
+
+  dealTwo() {
+    return this.deck.drawCard(2);
+  }
+}
+
+// game class
 class Game {
   constructor() {
+    this.gameOn = true;
+    this.createPlayers();
     this.playGame();
   }
 
+  createPlayers() {
+    this.dealer = new Dealer("Dealer");
+    this.player = new Player("Player");
+  }
+
   dealCards() {
-    player.cards = dealer.dealTwo();
-    dealer.cards = dealer.dealTwo();
-    console.log(player.cards);
+    this.player.cards = this.dealer.dealTwo();
+    this.dealer.cards = this.dealer.dealTwo();
   }
 
   getTotals() {
-    player.calculateTotal();
-    dealer.calculateTotal();
+    this.player.calculateTotal();
+    this.dealer.calculateTotal();
   }
 
   playerTurn() {
-    let move = (prompt("HIT or STAND?")).toLowerCase();
-    while (move !== "stand") {
-      player.hit();
-      console.log(player.cards);
-      if (this.checkBust(player)) this.adjustForAces(player);
-      if (this.checkBust(player)) return;
-      move = (prompt("HIT or STAND?")).toLowerCase();
+    if (this.player.checkTurnOver()) {
+      this.gameOn = false;
+      return endRound(this.dealer.name);
     }
+    let move = prompt("HIT or STAND?").toLowerCase();
+    while (move !== "stand") {
+      this.player.hit(this.dealer);
+      if (this.player.checkTurnOver()) {
+        this.gameOn = false;
+        return endRound(this.dealer.name);
+      }
+      move = prompt("HIT or STAND?").toLowerCase();
+    }
+    return this.player.stand();
   }
 
   dealerTurn() {
-    if (dealer.total < 17) return dealer.hit();
-    return dealer.stand();
+    while (this.dealer.total < 17) {
+      this.dealer.hit(this.dealer);
+    }
+    return this.dealer.stand();
   }
 
-  checkBust(object) {
-    return object.total > 21;
+  checkWinner() {
+    if (this.player.total === this.dealer.total) return "DRAW";
+    if (this.player.total > this.dealer.total) return this.player.name;
+    return this.dealer.name;
   }
 
-  findAce(cards) {
-    return cards.find(card => card.value === 11);
-  }
-
-  adjustForAces(object) {
-    const ace = this.findAce(player.cards);
-    if (!ace) return;
-    ace.adjustAceVal();
-    return object.calculateTotal();
+  endRound(result) {
+    if (result === "DRAW") {
+      console.log("DRAW");
+      return;
+    }
+    console.log(`${result} wins!`);
   }
 
   playGame() {
-    const round = 1;
-
     this.dealCards();
     this.getTotals();
+    this.player.showCards();
+    this.dealer.showCards();
     this.playerTurn();
+    console.log(this.gameOn);
+    if (!this.gameOn) return;
+    this.dealerTurn();
+    this.endRound(this.checkWinner());
 
     // while (round < 5) {
     //   this.dealCards();
