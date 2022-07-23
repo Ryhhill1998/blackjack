@@ -91,20 +91,12 @@ class Player {
     this.showCards();
   }
 
-  stand() {
-    return this.showCards();
-  }
-
   checkBust() {
     return this.total > 21;
   }
 
-  findAce() {
-    return this.cards.find(card => card.value === 11);
-  }
-
   checkForAces() {
-    const ace = this.findAce();
+    const ace = this.cards.find(card => card.value === 11);
     if (!ace) return false;
     ace.adjustAceVal();
     this.calculateTotal();
@@ -160,36 +152,31 @@ class Game {
   }
 
   playerTurn() {
-    if (this.player.checkTurnOver()) {
-      this.gameOn = false;
-      return endRound(this.dealer.name);
-    }
+    if (this.player.checkTurnOver()) return this.endRound(this.dealer.name);
     let move = prompt("HIT or STAND?").toLowerCase();
     while (move !== "stand") {
       this.player.hit(this.dealer);
-      if (this.player.checkTurnOver()) {
-        this.gameOn = false;
-        return endRound(this.dealer.name);
-      }
+      if (this.player.checkTurnOver()) return this.endRound(this.dealer.name);
       move = prompt("HIT or STAND?").toLowerCase();
     }
-    return this.player.stand();
+    return;
   }
 
   dealerTurn() {
     while (this.dealer.total < 17) {
       this.dealer.hit(this.dealer);
     }
-    return this.dealer.stand();
+    return;
   }
 
   checkWinner() {
     if (this.player.total === this.dealer.total) return "DRAW";
-    if (this.player.total > this.dealer.total) return this.player.name;
+    if (this.player.total > this.dealer.total || this.dealer.checkBust()) return this.player.name;
     return this.dealer.name;
   }
 
   endRound(result) {
+    this.gameOn = false;
     if (result === "DRAW") {
       console.log("DRAW");
       return;
@@ -203,18 +190,9 @@ class Game {
     this.player.showCards();
     this.dealer.showCards();
     this.playerTurn();
-    console.log(this.gameOn);
     if (!this.gameOn) return;
     this.dealerTurn();
     this.endRound(this.checkWinner());
-
-    // while (round < 5) {
-    //   this.dealCards();
-    //   this.getTotals();
-    //   this.playerTurn();
-    //   this.dealerTurn();
-    //   i++
-    // }
   }
 }
 
