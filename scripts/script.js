@@ -9,6 +9,10 @@ ranks.forEach(rank => {
   return valueMap.set(rank, +rank);
 });
 
+// --------------- DOM ELEMENTS --------------- //
+const hitBtn = document.querySelector(".btn--hit");
+const standBtn = document.querySelector(".btn--stand");
+
 // --------------- CLASSES --------------- //
 
 // card class
@@ -104,7 +108,7 @@ class Player {
     this.displayTotal();
   }
 
-  hit(dealer) {
+  addCard(dealer) {
     const card = dealer.dealOne();
     this.cards.push(card);
     this.showCards();
@@ -150,9 +154,10 @@ class Dealer extends Player {
 // game class
 class Game {
   constructor() {
-    this.gameOn = true;
     this.createPlayers();
-    this.playGame();
+    this.startGame();
+    hitBtn.addEventListener("click", this.hit.bind(this));
+    standBtn.addEventListener("click", this.stand.bind(this));
   }
 
   createPlayers() {
@@ -167,22 +172,10 @@ class Game {
     this.dealer.showCards();
   }
 
-  playerTurn() {
-    if (this.player.checkTurnOver()) return this.endRound(this.dealer.name);
-    let move = prompt("HIT or STAND?").toLowerCase();
-    while (move !== "stand") {
-      this.player.hit(this.dealer);
-      if (this.player.checkTurnOver()) return this.endRound(this.dealer.name);
-      move = prompt("HIT or STAND?").toLowerCase();
-    }
-    return;
-  }
-
   dealerTurn() {
     while (this.dealer.total < 17) {
-      this.dealer.hit(this.dealer);
+      this.dealer.addCard(this.dealer);
     }
-    return;
   }
 
   checkWinner() {
@@ -200,14 +193,28 @@ class Game {
     console.log(`${result} wins!`);
   }
 
-  playGame() {
+  hit() {
+    this.player.addCard(this.dealer);
+    if (this.player.checkTurnOver()) {
+      hitBtn.disabled = true;
+      standBtn.disabled = true;
+      this.endRound(this.dealer.name)
+    }
+  }
+
+  stand() {
+    hitBtn.disabled = true;
+    standBtn.disabled = true;
+    if (!this.gameOn) return;
+    this.dealerTurn();
+    this.endRound(this.checkWinner());
+  }
+
+  startGame() {
     this.dealCards();
-    setTimeout(() => {
-      this.playerTurn();
-      if (!this.gameOn) return;
-      this.dealerTurn();
-      this.endRound(this.checkWinner());
-    }, 1000);
+    hitBtn.disabled = false;
+    standBtn.disabled = false;
+    this.gameOn = true;
   }
 }
 

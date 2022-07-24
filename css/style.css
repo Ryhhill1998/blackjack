@@ -42,22 +42,13 @@ body {
   justify-content: flex-start;
 }
 
-.section--dealer {
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 0.1fr;
-  justify-content: center;
-  align-items: center;
-}
-
 .total--dealer {
   text-align: left;
 }
 
-.section--player {
+.section {
   grid-template-columns: 1fr;
   grid-template-rows: 0.1fr 1fr;
-  grid-row: 2;
-  grid-column: 2;
   justify-content: center;
   align-items: center;
 }
@@ -78,4 +69,22 @@ body {
 
 .deck-img {
   width: 220px;
+}
+
+.game-buttons {
+  display: grid;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2%;
+  padding: 5%;
+}
+
+.btn {
+  width: 100px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.btn--hit {
+  align-self: flex-end;
 }
