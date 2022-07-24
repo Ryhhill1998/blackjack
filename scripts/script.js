@@ -1,4 +1,3 @@
-
 const ranks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
 const suits = ["C", "D", "S", "H"];
 
@@ -19,6 +18,7 @@ class Card {
   constructor(rank, suit) {
     this.rank = rank;
     this.suit = suit;
+    this.imgSrc = `images/${this.suit}/${this.rank}.png`;
     this.setValue();
   }
 
@@ -75,19 +75,38 @@ class Player {
     return this.total;
   }
 
+  displayTotal() {
+    document.querySelector(`.value--${this.name}`).innerHTML = this.calculateTotal();
+  }
+
   showCards() {
-    let output = `${this.name}: `;
+    const div = document.querySelector(`.cards--${this.name}`);
+    div.innerHTML = "";
+
     this.cards.forEach(card => {
-      output += `${card.rank}${card.suit} `;
+      const html = `
+        <div class="card card--${this.name}">
+          <img class="card-img" src="${card.imgSrc}">
+        </div>
+      `;
+      div.insertAdjacentHTML("afterbegin", html);
     });
-    output += `Total = ${this.total}`;
-    console.log(output);
+
+    const sign = this.name === "dealer" ? "" : "-";
+
+    document.querySelectorAll(`.card--${this.name}`).forEach((card, i) => {
+      if (i > 0) {
+        card.style.position = "absolute";
+        card.style.transform = `translateX(${sign}${(i * 30)}px)`;
+      }
+    });
+
+    this.displayTotal();
   }
 
   hit(dealer) {
     const card = dealer.dealOne();
     this.cards.push(card);
-    this.calculateTotal();
     this.showCards();
   }
 
@@ -137,18 +156,15 @@ class Game {
   }
 
   createPlayers() {
-    this.dealer = new Dealer("Dealer");
-    this.player = new Player("Player");
+    this.dealer = new Dealer("dealer");
+    this.player = new Player("player");
   }
 
   dealCards() {
     this.player.cards = this.dealer.dealTwo();
+    this.player.showCards();
     this.dealer.cards = this.dealer.dealTwo();
-  }
-
-  getTotals() {
-    this.player.calculateTotal();
-    this.dealer.calculateTotal();
+    this.dealer.showCards();
   }
 
   playerTurn() {
@@ -186,13 +202,12 @@ class Game {
 
   playGame() {
     this.dealCards();
-    this.getTotals();
-    this.player.showCards();
-    this.dealer.showCards();
-    this.playerTurn();
-    if (!this.gameOn) return;
-    this.dealerTurn();
-    this.endRound(this.checkWinner());
+    setTimeout(() => {
+      this.playerTurn();
+      if (!this.gameOn) return;
+      this.dealerTurn();
+      this.endRound(this.checkWinner());
+    }, 1000);
   }
 }
 

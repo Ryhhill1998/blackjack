@@ -1,4 +1,8 @@
 
+body {
+  background-color: #2B7A0B;
+}
+
 .game-container {
   display: flex;
   justify-content: center;
@@ -8,7 +12,7 @@
 }
 
 .cards-grid {
-  width: 40vw;
+  width: 50vw;
   height: 70vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -16,35 +20,62 @@
   grid-gap: 2%;
 }
 
+.section {
+  display: grid;
+  padding: 5%;
+}
+
 .cards {
   display: flex;
 }
 
-.cards--dealer {
+.deck {
   grid-row: 1;
-  grid-column: 1;
+  grid-column: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cards--dealer {
   align-items: flex-start;
   justify-content: flex-start;
 }
 
-.cards--player {
+.section--dealer {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 0.1fr;
+  justify-content: center;
+  align-items: center;
+}
+
+.total--dealer {
+  text-align: left;
+}
+
+.section--player {
+  grid-template-columns: 1fr;
+  grid-template-rows: 0.1fr 1fr;
   grid-row: 2;
   grid-column: 2;
+  justify-content: center;
+  align-items: center;
+}
+
+.total--player {
+  text-align: right;
+}
+
+.cards--player {
   align-items: flex-end;
   justify-content: flex-end;
-}
-
-.dealer-card--2 {
-  position: absolute;
-  transform: translate(25px, 37.5px);
-}
-
-.player-card--2 {
-  position: absolute;
-  transform: translate(-25px, -37.5px);
 }
 
 .card-img {
   width: 100px;
   height: 150px;
+}
+
+.deck-img {
+  width: 220px;
 }
