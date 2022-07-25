@@ -96,7 +96,7 @@ class Player {
       div.insertAdjacentHTML("afterbegin", html);
     });
 
-    const sign = this.name === "dealer" ? "" : "-";
+    const sign = this.name === "dealer" ? "-" : "";
 
     document.querySelectorAll(`.card--${this.name}`).forEach((card, i) => {
       if (i > 0) {

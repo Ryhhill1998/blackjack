@@ -11,14 +11,14 @@
 
   <div class="game-container">
 
-    <div class="cards-grid">
+    <div class="game-grid">
 
-      <div class="deck">
+      <div class="section section--deck">
         <img class="deck-img" src="images/deck.png" alt="">
       </div>
 
-      <div class="section section--dealer">
-        <h2 class="total total--dealer">Total = <span class="value--dealer">21</span></h2>
+      <div class="section section--cards section--cards--dealer">
+        <h2 class="total total--dealer">Dealer Total = <span class="value--dealer">21</span></h2>
 
         <div class="cards cards--dealer">
           <div class="card card--dealer">
@@ -31,13 +31,8 @@
 
       </div>
 
-      <div class="game-buttons">
-        <button class="btn btn--hit">HIT</button>
-        <button class="btn btn--stand">STAND</button>
-      </div>
-
-      <div class="section section--player">
-        <h2 class="total total--player">Total = <span class="value--player">21</span></h2>
+      <div class="section section--cards section--cards--player">
+        <h2 class="total total--player">Player Total = <span class="value--player">21</span></h2>
 
         <div class="cards cards--player">
           <div class="card card--player">
@@ -50,10 +45,14 @@
 
       </div>
 
+      <div class="section section--buttons">
+        <button class="btn btn--hit">HIT</button>
+        <button class="btn btn--stand">STAND</button>
+      </div>
+
     </div>
 
   </div>
-
 
   <script src="scripts/script.js" charset="utf-8"></script>
 </body>
