@@ -12,6 +12,7 @@ ranks.forEach(rank => {
 // --------------- DOM ELEMENTS --------------- //
 const hitBtn = document.querySelector(".btn--hit");
 const standBtn = document.querySelector(".btn--stand");
+const playBtn = document.querySelector(".btn--play");
 
 // --------------- CLASSES --------------- //
 
@@ -68,7 +69,7 @@ class Deck {
 
 // player class
 class Player {
-  cards;
+  cards = [];
 
   constructor(name) {
     this.name = name;
@@ -133,6 +134,10 @@ class Player {
     }
     return false;
   }
+
+  clearCards() {
+    this.cards = [];
+  }
 }
 
 // dealer class - special type of player
@@ -155,7 +160,6 @@ class Dealer extends Player {
 class Game {
   constructor() {
     this.createPlayers();
-    this.startGame();
     hitBtn.addEventListener("click", this.hit.bind(this));
     standBtn.addEventListener("click", this.stand.bind(this));
   }
@@ -186,36 +190,54 @@ class Game {
 
   endRound(result) {
     this.gameOn = false;
+    this.disableButtons();
     if (result === "DRAW") {
       console.log("DRAW");
       return;
     }
     console.log(`${result} wins!`);
+    this.disableButtons();
+  }
+
+  reset() {
+    this.dealer.clearCards();
+    this.player.clearCards();
+  }
+
+  enableButtons() {
+    playBtn.disabled = true;
+    hitBtn.disabled = false;
+    standBtn.disabled = false;
+  }
+
+  disableButtons() {
+    playBtn.disabled = false;
+    hitBtn.disabled = true;
+    standBtn.disabled = true;
   }
 
   hit() {
     this.player.addCard(this.dealer);
-    if (this.player.checkTurnOver()) {
-      hitBtn.disabled = true;
-      standBtn.disabled = true;
-      this.endRound(this.dealer.name)
-    }
+    if (this.player.checkTurnOver()) this.endRound(this.dealer.name);
   }
 
   stand() {
-    hitBtn.disabled = true;
-    standBtn.disabled = true;
+    this.disableButtons();
     if (!this.gameOn) return;
     this.dealerTurn();
     this.endRound(this.checkWinner());
   }
 
   startGame() {
-    this.dealCards();
-    hitBtn.disabled = false;
-    standBtn.disabled = false;
+    this.reset();
     this.gameOn = true;
+    this.dealCards();
+    this.enableButtons();
   }
 }
 
 const game = new Game();
+
+playBtn.addEventListener("click", e => {
+  game.startGame(e);
+});
