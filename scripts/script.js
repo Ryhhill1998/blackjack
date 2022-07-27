@@ -62,7 +62,10 @@ class Deck {
 
   drawCard(num) {
     const drawnCards = [];
-    for (let i = 0; i < num; i++) drawnCards.push(this.cards.pop());
+    for (let i = 0; i < num; i++) {
+      if (!this.cards.length) this.createDeck();
+      drawnCards.push(this.cards.pop());
+    }
     return drawnCards;
   }
 }
