@@ -12,7 +12,7 @@ ranks.forEach(rank => {
 // --------------- DOM ELEMENTS --------------- //
 const hitBtn = document.querySelector(".btn--hit");
 const standBtn = document.querySelector(".btn--stand");
-const playBtn = document.querySelector(".btn--play");
+const dealBtn = document.querySelector(".btn--deal");
 
 // --------------- CLASSES --------------- //
 
@@ -208,13 +208,13 @@ class Game {
   }
 
   enableButtons() {
-    playBtn.disabled = true;
+    dealBtn.disabled = true;
     hitBtn.disabled = false;
     standBtn.disabled = false;
   }
 
   disableButtons() {
-    playBtn.disabled = false;
+    dealBtn.disabled = false;
     hitBtn.disabled = true;
     standBtn.disabled = true;
   }
@@ -241,6 +241,6 @@ class Game {
 
 const game = new Game();
 
-playBtn.addEventListener("click", e => {
+dealBtn.addEventListener("click", e => {
   game.startGame(e);
 });

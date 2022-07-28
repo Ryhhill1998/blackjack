@@ -1,6 +1,8 @@
 
 body {
   background-color: #2B7A0B;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
 }
 
 .game-container {
@@ -82,7 +84,18 @@ body {
 }
 
 .btn {
-  width: 100px;
+  width: 120px;
   height: 50px;
   cursor: pointer;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  font-family: inherit;
+  font-weight: bold;
+}
+
+.btn--deal {
+  /* background-image: linear-gradient(to top left, #30E3CA, #11999E); */
+  border-color: rgba(0, 0, 0, 0.5);
+  background-color: #11999E;
+  color: white;
 }
